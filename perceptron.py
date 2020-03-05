@@ -4,7 +4,7 @@ class Perceptron:
     def __init__(self, input_dim, err_threshold=0):
         self.INPUT_DIM = input_dim
         self.LEARNING_RATE = 0.5
-        self.weights = np.random.random_sample((input_dim,1)).flatten()
+        self.weights = np.random.random_sample((1,input_dim)).flatten()
         self.bias = np.random.rand()
         self.ERR_THRESHOLD = err_threshold
 
@@ -17,8 +17,7 @@ class Perceptron:
         bias = self.bias*np.ones((data.shape[0]))
 
         # initial forward pass
-        Y = np.dot(data, self.weights)
-        Y = Y.flatten() + self.bias*np.ones((data.shape[0]))
+        Y = np.dot(data, self.weights).flatten() + bias
         Y[Y > 0] = 1
         Y[Y <= 0] = 0
 
@@ -34,7 +33,7 @@ class Perceptron:
             self.weights = new_weights
 
             # calculate new bias based on forward pass
-            new_bias = self.bias + np.sum(self.LEARNING_RATE*(labels.transpose() - Y))
+            new_bias = self.bias + np.sum(self.LEARNING_RATE*(labels.T - Y))
             self.bias = new_bias
 
             print("Mean Squared Error: ", MeanSquareError(Y, labels), "\n")
@@ -42,7 +41,7 @@ class Perceptron:
 
 def MeanSquareError(Y, labels):
     num_samples = labels.shape[0]
-    err = np.sum((labels.transpose() - Y)**2)/num_samples
+    err = np.sum((labels.T - Y)**2)/num_samples
     return err
 
 
